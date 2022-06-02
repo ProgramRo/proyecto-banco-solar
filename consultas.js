@@ -17,7 +17,6 @@ const consultarTransferencias = async () => {
     }
     try {
         const result = await pool.query(SQLQuery)
-        console.log(result.rows)
         return result.rows
     } catch (error) {
         console.log(error)
@@ -35,9 +34,38 @@ const consultarUsuarios = async () => {
     }
 }
 
+const crearUsuarios = async (datos) => {
+    const SQLQuery = {
+        text: 'INSERT INTO usuarios(nombre, balance) VALUES($1, $2) RETURNING *',
+        values: datos,
+    }
+    try {
+        const result = await pool.query(SQLQuery)
+        return result
+    } catch (error) {
+        console.log(error)
+        return error
+    }
+}
+
+const actualizarUsuarios = async (datos, id) => {
+    const SQLQuery = {
+        text: 'UPDATE usuarios SET nombre=$1, balance=$2 WHERE id=$3',
+        values: [datos.name, datos.balance, id],
+    }
+    try {
+        const result = await pool.query(SQLQuery)
+        console.log(result)
+        return result
+    } catch (error) {
+        console.log(error)
+        return error
+    }
+}
+
 const eliminarUsuarios = async (id) => {
     const SQLQuery = {
-        text: 'DELETE FROM usuarios WHERE id = $1',
+        text: 'DELETE FROM usuarios WHERE id=$1',
         values: [id],
     }
     try {
@@ -49,4 +77,4 @@ const eliminarUsuarios = async (id) => {
     }
 }
 
-module.exports = { consultarTransferencias, consultarUsuarios, eliminarUsuarios }
+module.exports = { consultarTransferencias, consultarUsuarios, crearUsuarios, actualizarUsuarios, eliminarUsuarios }
