@@ -8,3 +8,5 @@ CREATE TABLE transferencias(id SERIAL PRIMARY KEY, emisor INT, receptor INT, mon
 --Se agregan registros para ver si la conexión es correcta
 INSERT INTO usuarios(nombre, balance) VALUES('Leandro Rodriguez', 200000);
 INSERT INTO usuarios(nombre, balance) VALUES('Lissandra Ice', 210000);
+
+INSERT INTO transferencias(emisor, receptor, monto, fecha) VALUES(5, 6, 5000, '2022-06-01');
