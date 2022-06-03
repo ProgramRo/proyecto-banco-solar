@@ -25,3 +25,8 @@ Para el trabajo, se realizaron las siguientes rutas:
     ● /usuario DELETE: Recibe el id de un usuario registrado y lo elimina .
     ● /transferencia POST: Recibe los datos para realizar una nueva transferencia. Se debe ocupar una transacción SQL en la consulta a la base de datos.
     ● /transferencias GET: Devuelve todas las transferencias almacenadas en la base de datos en formato de arreglo.
+
+### Requerimientos para que el programa funcione
+
+Node.js -> v16.14.0
+PostgreSQL -> v14.2
