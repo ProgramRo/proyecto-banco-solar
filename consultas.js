@@ -12,7 +12,7 @@ const pool = new Pool(config)
 
 const consultarTransferencias = async () => {
     const SQLQuery = {
-        text: 'SELECT * FROM transferencias',
+        text: 'SELECT t.id, us.nombre AS emisor, usu.nombre AS receptor, t.monto, t.fecha FROM transferencias t INNER JOIN usuarios us ON t.emisor = us.id INNER JOIN usuarios usu ON t.receptor = usu.id',
         rowMode: 'array'
     }
     try {
@@ -22,6 +22,33 @@ const consultarTransferencias = async () => {
         console.log(error)
         return error
     }
+}
+
+const hacerTransferencias = async (datos) => {
+    const descontar = {
+        text: 'UPDATE usuarios SET balance = balance - $1 WHERE id = $2 RETURNING *',
+        values: [datos.monto, datos.emisor],
+    }
+    const acreditar = {
+        text: 'UPDATE usuarios SET balance = balance + $1 WHERE id = $2 RETURNING *',
+        values: [datos.monto, datos.receptor],
+    }
+    pool.connect( async(errorConexion, client, release) => {
+        try {
+            await client.query('BEGIN')
+            const descuento = await client.query(descontar)
+            const acreditacion = await client.query(acreditar)
+
+            console.log('Descuento en:', descuento.rows[0])
+            console.log('Descuento en:', acreditacion.rows[0])
+
+            await client.query('COMMIT')
+        } catch (error) {
+            await client.query('ROLLBACK')
+            console.log(error)
+            return error
+        }
+    })
 }
 
 const consultarUsuarios = async () => {
@@ -55,7 +82,6 @@ const actualizarUsuarios = async (datos, id) => {
     }
     try {
         const result = await pool.query(SQLQuery)
-        console.log(result)
         return result
     } catch (error) {
         console.log(error)
@@ -77,4 +103,5 @@ const eliminarUsuarios = async (id) => {
     }
 }
 
-module.exports = { consultarTransferencias, consultarUsuarios, crearUsuarios, actualizarUsuarios, eliminarUsuarios }
+
+module.exports = { consultarTransferencias, hacerTransferencias, consultarUsuarios, crearUsuarios, actualizarUsuarios, eliminarUsuarios }

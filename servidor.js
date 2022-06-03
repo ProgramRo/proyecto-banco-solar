@@ -2,7 +2,7 @@ const http = require('http')
 const url = require('url')
 const fs = require('fs')
 
-const { consultarTransferencias, consultarUsuarios, crearUsuarios, actualizarUsuarios, eliminarUsuarios } = require('./consultas')
+const { consultarTransferencias, hacerTransferencias, consultarUsuarios, crearUsuarios, actualizarUsuarios, eliminarUsuarios } = require('./consultas')
 
 // Se crea el servidor con rutas
 http.createServer( async(req, res) => {
@@ -17,6 +17,19 @@ http.createServer( async(req, res) => {
     if(req.url === '/transferencias' && req.method === 'GET') {
         const registros = await consultarTransferencias()
         res.end(JSON.stringify(registros))
+    }
+
+    // Ruta para realizar transferencias
+    if(req.url === '/transferencia' && req.method === 'POST') {
+        let body = ''
+        req.on('data', (chunk) => {
+            body += chunk
+        })
+        req.on('end', async () => {
+            const datos = JSON.parse(body)
+            await hacerTransferencias(datos)
+            res.end(JSON.stringify({}))
+        })
     }
 
     // Ruta para crear nuevos usuarios
