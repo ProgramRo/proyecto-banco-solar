@@ -28,5 +28,5 @@ Para el trabajo, se realizaron las siguientes rutas:
 
 ### Requerimientos para que el programa funcione
 
-Node.js -> v16.14.0
-PostgreSQL -> v14.2
+    ● Node.js -> v16.14.0
+    ● PostgreSQL -> v14.2
